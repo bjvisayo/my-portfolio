@@ -9,6 +9,47 @@ npm run server
 
 Open `http://127.0.0.1:3000/admin`.
 
+For local API testing, do not use `npm run dev` by itself. Vite only serves the React frontend, so `/api/leads` will not exist and the contact form will show "Backend not reachable." Use one of these:
+
+```bash
+npm run build
+npm run server
+```
+
+Or install/use the Vercel CLI and run:
+
+```bash
+vercel dev
+```
+
+## Vercel deployment
+
+This project now includes:
+
+- `api/[...path].js` for Vercel serverless API routes
+- `vercel.json` to serve the React SPA correctly at `/admin`, `/projects`, `/contact`, and other client routes
+
+Set these environment variables in Vercel Project Settings:
+
+```bash
+ADMIN_USERNAME=owner
+ADMIN_PASSWORD=use-a-strong-password
+STORAGE_DRIVER=supabase
+SUPABASE_URL=https://your-project-ref.supabase.co
+SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+SUPABASE_LEADS_TABLE=leads
+SUPABASE_PROJECTS_TABLE=projects
+SUPABASE_PROJECT_IMAGES_TABLE=project_images
+SUPABASE_PROJECT_IMAGES_BUCKET=project-images
+MAIL_PROVIDER=resend
+RESEND_API_KEY=your-resend-api-key
+MAIL_FROM=Xander Kreativ <hello@xanderkreativ.com>
+LEAD_NOTIFICATION_TO=hello@xanderkreativ.com
+SEND_LEAD_AUTOREPLY=false
+```
+
+Vercel serverless functions have request size limits, so project image uploads default to `MAX_PROJECT_IMAGE_MB=3`.
+
 ## Environment variables
 
 - `PORT`: server port, defaults to `3000`

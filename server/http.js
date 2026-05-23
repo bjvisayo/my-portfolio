@@ -1,6 +1,22 @@
-const maxBodyBytes = 100 * 1024;
+import { config } from "./config.js";
+
+const maxBodyBytes = Math.max(256 * 1024, (config.maxProjectImageMb + 2) * 1024 * 1024);
 
 export async function readJson(request) {
+  if (request.body && typeof request.body === "object" && !Buffer.isBuffer(request.body)) {
+    return request.body;
+  }
+
+  if (typeof request.body === "string") {
+    try {
+      return JSON.parse(request.body);
+    } catch {
+      const error = new Error("Invalid JSON body");
+      error.statusCode = 400;
+      throw error;
+    }
+  }
+
   const chunks = [];
   let size = 0;
 
