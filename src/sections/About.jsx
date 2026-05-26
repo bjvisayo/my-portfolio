@@ -14,10 +14,10 @@ export default function About() {
       <div className="container-xl relative grid items-center gap-14 lg:grid-cols-[.9fr_1fr]">
         <Reveal>
           <span className="eyebrow">About us</span>
-          <h2 className="section-title">We’re Xander Kreativ</h2>
+          <h2 className="section-title">I'm Xander Kreativ</h2>
           <div className="mt-6 space-y-5 text-sm leading-8 text-slate-300 sm:text-base">
             <p>
-              We are a modern web design and development agency dedicated to helping businesses succeed online with
+              I am a modern web design and development agency dedicated to helping businesses succeed online with
               premium digital experiences that look sharp, load fast, and convert.
             </p>
             <p>

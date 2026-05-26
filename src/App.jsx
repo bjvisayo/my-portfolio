@@ -20,10 +20,10 @@ const routes = {
 };
 
 function useRoute() {
-  const [path, setPath] = useState(window.location.pathname);
+  const [path, setPath] = useState(normalizePath(window.location.pathname));
 
   useEffect(() => {
-    const onNavigate = () => setPath(window.location.pathname);
+    const onNavigate = () => setPath(normalizePath(window.location.pathname));
     window.addEventListener("popstate", onNavigate);
     window.addEventListener("xk:navigate", onNavigate);
     return () => {
@@ -32,6 +32,11 @@ function useRoute() {
     };
   }, []);
 
+  return path;
+}
+
+function normalizePath(path) {
+  if (path.length > 1 && path.endsWith("/")) return path.slice(0, -1);
   return path;
 }
 

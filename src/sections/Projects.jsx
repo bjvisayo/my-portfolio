@@ -5,8 +5,9 @@ import { Reveal, fadeUp, stagger } from "../components/Motion.jsx";
 import Link from "../components/Link.jsx";
 import { projects as fallbackProjects } from "../data/siteData.js";
 
-export default function Projects() {
+export default function Projects({ revealMode = "viewport" }) {
   const [projects, setProjects] = useState(fallbackProjects);
+  const shouldRevealImmediately = revealMode === "immediate";
 
   useEffect(() => {
     let active = true;
@@ -41,8 +42,9 @@ export default function Projects() {
         <motion.div
           variants={stagger}
           initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
+          animate={shouldRevealImmediately ? "show" : undefined}
+          whileInView={shouldRevealImmediately ? undefined : "show"}
+          viewport={shouldRevealImmediately ? undefined : { once: true, margin: "-80px" }}
           className="mt-12 grid gap-6 lg:grid-cols-2"
         >
           {projects.map((project) => (
