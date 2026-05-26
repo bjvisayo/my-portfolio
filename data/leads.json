@@ -1,1 +1,17 @@
-[]
+[
+  {
+    "id": "2088e4a4-e295-4574-9937-589d49f9913e",
+    "firstName": "API",
+    "lastName": "Test",
+    "email": "api-test@example.com",
+    "phone": "",
+    "service": "Website Design",
+    "details": "Testing contact API.",
+    "source": "Website contact form",
+    "status": "New",
+    "amountPaid": 0,
+    "notes": "",
+    "createdAt": "2026-05-23T23:22:19.272Z",
+    "updatedAt": "2026-05-23T23:22:19.272Z"
+  }
+]

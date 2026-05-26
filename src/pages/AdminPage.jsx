@@ -120,8 +120,8 @@ function ProjectsAdmin({ authHeader, setMessage }) {
       if (!response.ok) throw new Error("Unable to load projects");
       const data = await response.json();
       setProjects(data.projects || []);
-    } catch {
-      setMessage("Could not load projects.");
+    } catch (error) {
+      setMessage(error.message || "Could not load projects.");
     } finally {
       setLoading(false);
     }
@@ -139,13 +139,13 @@ function ProjectsAdmin({ authHeader, setMessage }) {
         headers: { "Content-Type": "application/json", Authorization: authHeader },
         body: JSON.stringify(draft),
       });
-      if (!response.ok) throw new Error("Unable to create project");
+      if (!response.ok) throw new Error(await readApiError(response, "Unable to create project"));
       const data = await response.json();
       setProjects((current) => [data.project, ...current]);
       setDraft(projectTemplate);
       setMessage("Project created. Add a hero image next.");
-    } catch {
-      setMessage("Could not create project.");
+    } catch (error) {
+      setMessage(error.message || "Could not create project.");
     }
   };
 
@@ -185,11 +185,11 @@ function ProjectsAdmin({ authHeader, setMessage }) {
         headers: { "Content-Type": "application/json", Authorization: authHeader },
         body: JSON.stringify({ ...payload, alt: project.title, isHero }),
       });
-      if (!response.ok) throw new Error("Unable to upload image");
+      if (!response.ok) throw new Error(await readApiError(response, "Unable to upload image"));
       setMessage(isHero ? "Hero image uploaded." : "Gallery image uploaded.");
       await loadProjects();
-    } catch {
-      setMessage("Could not upload image. Use JPG, PNG, or WebP under the configured size limit.");
+    } catch (error) {
+      setMessage(error.message || "Could not upload image. Use JPG, PNG, or WebP under the configured size limit.");
     }
   };
 
@@ -501,4 +501,9 @@ function fileToPayload(file) {
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
+}
+
+async function readApiError(response, fallback) {
+  const data = await response.json().catch(() => ({}));
+  return data.error || fallback;
 }

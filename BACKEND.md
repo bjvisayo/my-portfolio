@@ -97,7 +97,9 @@ The default storage driver is JSON-file based. It is fine for local testing or a
 
 ## Supabase setup
 
-Create a table named `leads` in Supabase:
+Open Supabase, go to **SQL Editor**, paste the contents of `supabase-schema.sql`, and run it. That creates the `leads`, `projects`, and `project_images` tables.
+
+The same SQL is shown below for reference:
 
 ```sql
 create table if not exists public.leads (

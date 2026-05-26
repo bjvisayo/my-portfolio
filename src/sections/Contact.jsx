@@ -28,14 +28,19 @@ export default function Contact() {
         body: JSON.stringify(form),
       });
 
-      if (!response.ok) throw new Error("Unable to save lead");
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Unable to save lead");
+      }
 
       setForm({ firstName: "", lastName: "", email: "", service: "", details: "" });
       setStatus({ type: "success", message: "Message received. We will respond within 24 hours." });
-    } catch {
+    } catch (error) {
       setStatus({
         type: "error",
-        message: "Backend not reachable yet. Start the Node server or use WhatsApp for now.",
+        message: error.message.includes("Failed to fetch")
+          ? "Backend not reachable yet. Open the site through port 3000 or run the backend server."
+          : error.message,
       });
     }
   };
