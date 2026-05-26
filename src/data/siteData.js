@@ -31,6 +31,7 @@ import {
 } from "lucide-react";
 
 export const navLinks = [
+  { label: "Home", href: "/" },
   { label: "Projects", href: "/projects" },
   { label: "Services", href: "/services" },
   { label: "Process", href: "/process" },
