@@ -117,8 +117,8 @@ function ProjectsAdmin({ authHeader, setMessage }) {
     setLoading(true);
     try {
       const response = await fetch("/api/admin/projects", { headers: { Authorization: authHeader } });
-      if (!response.ok) throw new Error("Unable to load projects");
-      const data = await response.json();
+      if (!response.ok) throw new Error(await readApiError(response, "Unable to load projects"));
+      const data = await readApiJson(response);
       setProjects(data.projects || []);
     } catch (error) {
       setMessage(error.message || "Could not load projects.");
@@ -140,7 +140,7 @@ function ProjectsAdmin({ authHeader, setMessage }) {
         body: JSON.stringify(draft),
       });
       if (!response.ok) throw new Error(await readApiError(response, "Unable to create project"));
-      const data = await response.json();
+      const data = await readApiJson(response);
       setProjects((current) => [data.project, ...current]);
       setDraft(projectTemplate);
       setMessage("Project created. Add a hero image next.");
@@ -323,8 +323,8 @@ function LeadsAdmin({ authHeader, setMessage }) {
       if (filters.q) params.set("q", filters.q);
       if (filters.status) params.set("status", filters.status);
       const response = await fetch(`/api/leads?${params.toString()}`, { headers: { Authorization: authHeader } });
-      if (!response.ok) throw new Error("Unable to load leads");
-      const data = await response.json();
+      if (!response.ok) throw new Error(await readApiError(response, "Unable to load leads"));
+      const data = await readApiJson(response);
       setLeads(data.leads || []);
       setEdits(Object.fromEntries((data.leads || []).map((lead) => [lead.id, lead])));
     } catch {
@@ -348,8 +348,8 @@ function LeadsAdmin({ authHeader, setMessage }) {
         headers: { "Content-Type": "application/json", Authorization: authHeader },
         body: JSON.stringify({ status: draft.status, amountPaid: Number(draft.amountPaid || 0), notes: draft.notes || "" }),
       });
-      if (!response.ok) throw new Error("Unable to save lead");
-      const data = await response.json();
+      if (!response.ok) throw new Error(await readApiError(response, "Unable to save lead"));
+      const data = await readApiJson(response);
       setLeads((current) => current.map((lead) => (lead.id === id ? data.lead : lead)));
       setMessage("Lead updated.");
     } catch {
@@ -504,6 +504,22 @@ function fileToPayload(file) {
 }
 
 async function readApiError(response, fallback) {
-  const data = await response.json().catch(() => ({}));
-  return data.error || fallback;
+  const text = await response.text().catch(() => "");
+  if (text.trim().startsWith("<")) {
+    return "The API returned the website HTML instead of JSON. Redeploy after updating vercel.json so /api routes reach the serverless function.";
+  }
+  try {
+    const data = JSON.parse(text);
+    return data.error || fallback;
+  } catch {
+    return text || fallback;
+  }
+}
+
+async function readApiJson(response) {
+  const text = await response.text();
+  if (text.trim().startsWith("<")) {
+    throw new Error("The API returned the website HTML instead of JSON. Redeploy after updating vercel.json so /api routes reach the serverless function.");
+  }
+  return JSON.parse(text);
 }
