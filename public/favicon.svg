@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="glow" cx="28%" cy="18%" r="78%">
+      <stop offset="0%" stop-color="#67E8F9"/>
+      <stop offset="48%" stop-color="#3B82F6"/>
+      <stop offset="100%" stop-color="#07111F"/>
+    </radialGradient>
+  </defs>
+  <rect width="64" height="64" rx="18" fill="#07111F"/>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#glow)" opacity="0.95"/>
+  <rect x="5.5" y="5.5" width="53" height="53" rx="15" fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="3"/>
+  <text
+    x="32"
+    y="39"
+    text-anchor="middle"
+    font-family="Inter, Arial, sans-serif"
+    font-size="22"
+    font-weight="800"
+    letter-spacing="-1"
+    fill="#ffffff"
+  >XK</text>
+</svg>

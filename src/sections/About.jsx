@@ -1,6 +1,9 @@
 import { Heart, Star } from "lucide-react";
 import { Reveal } from "../components/Motion.jsx";
 
+const aboutImage =
+  "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=1200&q=85";
+
 const aboutStats = [
   { value: "5+", label: "Years Experience" },
   { value: "50+", label: "Projects Done" },
@@ -37,29 +40,16 @@ export default function About() {
         <Reveal delay={0.1} className="relative">
           <div className="absolute -inset-8 rounded-full bg-blue-500/15 blur-3xl" />
           <div className="relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.04] p-5 shadow-2xl shadow-black/35 backdrop-blur-xl">
-            <div className="rounded-[1.5rem] bg-[#eef4ff] p-6 text-slate-950">
-              <div className="mb-12 flex items-center justify-between text-xs font-black uppercase tracking-widest">
-                <span>DSGN.</span>
-                <span className="text-blue-600">Home</span>
-                <span>Catalogue</span>
-              </div>
-              <div className="grid items-end gap-5 sm:grid-cols-[.85fr_1fr]">
-                <div>
-                  <div className="mb-4 h-3 w-24 rounded-full bg-blue-500" />
-                  <div className="font-display text-6xl font-black leading-none text-slate-950 sm:text-7xl">
-                    DSGN<span className="text-orange-500">*</span>
-                  </div>
-                  <div className="mt-6 space-y-2">
-                    <div className="h-2 rounded-full bg-slate-300" />
-                    <div className="h-2 w-4/5 rounded-full bg-slate-300" />
-                    <div className="h-2 w-2/3 rounded-full bg-slate-300" />
-                  </div>
-                </div>
-                <div className="relative h-72 overflow-hidden rounded-3xl bg-gradient-to-b from-slate-200 to-slate-400">
-                  <div className="absolute bottom-0 left-1/2 h-56 w-36 -translate-x-1/2 rounded-t-full bg-slate-900" />
-                  <div className="absolute left-1/2 top-12 h-24 w-24 -translate-x-1/2 rounded-full bg-slate-300" />
-                  <div className="absolute bottom-7 left-1/2 h-24 w-48 -translate-x-1/2 rounded-t-[3rem] border border-white/30 bg-slate-800" />
-                </div>
+            <div className="relative h-[440px] overflow-hidden rounded-[1.5rem]">
+              <img
+                src={aboutImage}
+                alt="Creative team collaborating around a laptop in a natural studio setting"
+                className="h-full w-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-slate-950/10 to-transparent" />
+              <div className="absolute bottom-5 left-5 right-5 rounded-3xl border border-white/15 bg-slate-950/55 p-5 backdrop-blur-xl">
+                <div className="text-xs font-black uppercase tracking-[0.22em] text-blue-200">Studio process</div>
+                <div className="mt-2 font-display text-3xl font-bold text-white">Strategy, design, and clean execution.</div>
               </div>
             </div>
           </div>

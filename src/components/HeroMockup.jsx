@@ -1,5 +1,8 @@
 import { motion } from "framer-motion";
-import { CheckCircle2, Gauge, MonitorSmartphone, Sparkles } from "lucide-react";
+import { CheckCircle2, Gauge, MonitorSmartphone } from "lucide-react";
+
+const heroImage =
+  "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=85";
 
 export default function HeroMockup() {
   return (
@@ -23,42 +26,20 @@ export default function HeroMockup() {
             <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
             <span className="ml-3 h-6 flex-1 rounded-full bg-white/[0.06]" />
           </div>
-          <div className="mockup-screen overflow-hidden rounded-2xl p-5">
-            <div className="grid gap-4 md:grid-cols-[1fr_.8fr]">
-              <div>
-                <div className="mb-3 h-3 w-24 rounded-full bg-blue-300/80" />
-                <div className="mb-2 h-8 w-full max-w-52 rounded-lg bg-white/90" />
-                <div className="mb-6 h-8 w-40 rounded-lg bg-white/75" />
-                <div className="space-y-2">
-                  <div className="h-2 rounded-full bg-slate-300/40" />
-                  <div className="h-2 w-4/5 rounded-full bg-slate-300/30" />
-                  <div className="h-2 w-2/3 rounded-full bg-slate-300/20" />
-                </div>
-                <div className="mt-6 flex gap-2">
-                  <div className="h-9 w-28 rounded-full bg-blue-500" />
-                  <div className="h-9 w-20 rounded-full border border-white/20" />
-                </div>
-              </div>
-              <div className="grid gap-3">
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
-                  <div className="mb-3 flex items-center gap-2 text-xs font-bold text-white">
-                    <Sparkles size={14} className="text-cyan-300" /> Live Preview
-                  </div>
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="h-20 rounded-xl bg-blue-400/30" />
-                    <div className="h-20 rounded-xl bg-purple-400/30" />
-                    <div className="col-span-2 h-12 rounded-xl bg-white/15" />
-                  </div>
-                </div>
-                <div className="rounded-2xl border border-white/10 bg-white/10 p-3">
-                  <div className="flex items-center justify-between text-xs text-slate-200">
-                    <span>Conversions</span>
-                    <span className="text-emerald-300">+42%</span>
-                  </div>
-                  <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/10">
-                    <div className="h-full w-4/5 rounded-full bg-gradient-to-r from-cyan-300 to-blue-500" />
-                  </div>
-                </div>
+          <div className="relative h-[360px] overflow-hidden rounded-2xl">
+            <img
+              src={heroImage}
+              alt="Natural modern workspace with laptop and warm daylight"
+              className="h-full w-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-tr from-slate-950/80 via-slate-950/20 to-blue-500/10" />
+            <div className="absolute bottom-5 left-5 right-5 rounded-3xl border border-white/15 bg-slate-950/55 p-5 backdrop-blur-xl">
+              <div className="mb-3 h-2 w-24 rounded-full bg-cyan-300" />
+              <h3 className="font-display text-2xl font-bold text-white">Clean sites. Real business impact.</h3>
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                <div className="h-16 rounded-2xl bg-white/15" />
+                <div className="h-16 rounded-2xl bg-blue-400/25" />
+                <div className="h-16 rounded-2xl bg-cyan-300/20" />
               </div>
             </div>
           </div>

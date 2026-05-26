@@ -1,4 +1,4 @@
-import { MapPin, Send, MessageCircle } from "lucide-react";
+import { Send, MessageCircle } from "lucide-react";
 import { useState } from "react";
 import { Reveal } from "../components/Motion.jsx";
 import { contactCards } from "../data/siteData.js";
@@ -127,11 +127,6 @@ export default function Contact() {
               <span className="mt-5 block text-2xl font-black">Chat on WhatsApp</span>
               <span className="mt-2 block text-sm font-semibold text-emerald-50">+1 417 560 9297</span>
             </a>
-            <div className="rounded-[1.75rem] border border-white/10 bg-white/[0.04] p-8 text-center">
-              <MapPin className="mx-auto text-blue-300" size={32} />
-              <h3 className="mt-5 font-extrabold">Location Available on Request</h3>
-              <p className="mt-2 text-sm text-slate-400">Remote-friendly agency with fast response times.</p>
-            </div>
           </Reveal>
         </div>
       </div>
