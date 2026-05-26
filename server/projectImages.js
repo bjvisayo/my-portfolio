@@ -56,6 +56,36 @@ async function uploadToSupabase(storagePath, contentType, buffer) {
   }
 
   return {
-    url: `${config.supabaseUrl}/storage/v1/object/public/${config.supabaseProjectImagesBucket}/${storagePath}`,
+    url: getProjectImageProxyUrl(storagePath),
   };
+}
+
+export async function getProjectImageObject(storagePath) {
+  if (!config.isSupabaseConfigured) {
+    throw new Error("Supabase image delivery requires Supabase credentials");
+  }
+
+  const response = await fetch(`${config.supabaseUrl}/storage/v1/object/${config.supabaseProjectImagesBucket}/${encodeStoragePath(storagePath)}`, {
+    headers: {
+      apikey: config.supabaseServiceRoleKey,
+      Authorization: `Bearer ${config.supabaseServiceRoleKey}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Supabase image fetch failed: ${response.status} ${await response.text()}`);
+  }
+
+  return {
+    buffer: Buffer.from(await response.arrayBuffer()),
+    contentType: response.headers.get("content-type") || "application/octet-stream",
+  };
+}
+
+export function getProjectImageProxyUrl(storagePath) {
+  return `/api/project-images?path=${encodeURIComponent(storagePath)}`;
+}
+
+function encodeStoragePath(storagePath) {
+  return String(storagePath).split("/").map(encodeURIComponent).join("/");
 }

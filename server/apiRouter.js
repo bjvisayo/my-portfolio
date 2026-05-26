@@ -2,6 +2,7 @@ import { config } from "./config.js";
 import { isAuthorized, unauthorized } from "./auth.js";
 import { createLead, deleteLead, exportLeadsCsv, getLead, listLeads, updateLead } from "./leadsService.js";
 import { createProject, deleteProject, deleteProjectImage, listProjects, updateProject, uploadProjectImage } from "./projectsService.js";
+import { getProjectImageObject } from "./projectImages.js";
 import { readJson, sendJson } from "./http.js";
 
 const rateLimit = new Map();
@@ -47,6 +48,18 @@ export async function handleApiRequest(request, response) {
     if (url.pathname === "/api/projects" && request.method === "GET") {
       const result = await listProjects({ featuredOnly: url.searchParams.get("featured") === "true" });
       return sendJson(response, 200, result);
+    }
+
+    if (url.pathname === "/api/project-images" && request.method === "GET") {
+      const storagePath = url.searchParams.get("path");
+      if (!storagePath) return sendJson(response, 400, { error: "Missing project image path" });
+      const image = await getProjectImageObject(storagePath);
+      response.writeHead(200, {
+        "Content-Type": image.contentType,
+        "Cache-Control": "public, max-age=31536000, immutable",
+      });
+      response.end(image.buffer);
+      return;
     }
 
     if (url.pathname === "/api/admin/projects" && request.method === "GET") {

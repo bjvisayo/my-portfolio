@@ -1,6 +1,7 @@
 import { mkdir, readFile, rename, stat, writeFile } from "node:fs/promises";
 import { dirname } from "node:path";
 import { config } from "./config.js";
+import { getProjectImageProxyUrl } from "./projectImages.js";
 
 export async function listProjectRecords() {
   if (usesSupabase()) return supabaseListProjects();
@@ -220,7 +221,7 @@ function fromProjectRow(row) {
 function fromImageRow(row) {
   return {
     id: row.id,
-    url: row.url,
+    url: getProjectImageProxyUrl(row.storage_path),
     storagePath: row.storage_path,
     alt: row.alt || "",
     isHero: Boolean(row.is_hero),
