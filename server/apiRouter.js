@@ -23,6 +23,14 @@ export async function handleApiRequest(request, response) {
         ok: true,
         service: "xander-kreativ-backend",
         storage: config.storageDriver,
+        supabaseConfigured: config.isSupabaseConfigured,
+        tables: {
+          leads: config.supabaseLeadsTable,
+          projects: config.supabaseProjectsTable,
+          projectImages: config.supabaseProjectImagesTable,
+        },
+        projectImagesBucket: config.supabaseProjectImagesBucket,
+        mailConfigured: config.isMailConfigured,
         timestamp: new Date().toISOString(),
       });
     }
@@ -114,8 +122,21 @@ export async function handleApiRequest(request, response) {
     return sendJson(response, 404, { error: "API route not found" });
   } catch (error) {
     console.error(error);
-    return sendJson(response, error.statusCode || 500, { error: config.isProduction ? "Server error" : error.message });
+    return sendJson(response, error.statusCode || 500, { error: getPublicErrorMessage(error) });
   }
+}
+
+function getPublicErrorMessage(error) {
+  const message = error?.message || "Server error";
+  const safePrefixes = [
+    "Supabase request failed:",
+    "Supabase image upload failed:",
+    "Supabase selected",
+    "Supabase storage selected",
+    "Resend email failed:",
+  ];
+  if (safePrefixes.some((prefix) => message.startsWith(prefix))) return message;
+  return config.isProduction ? "Server error" : message;
 }
 
 function allowPublicSubmission(request) {
