@@ -47,6 +47,7 @@ export async function handleApiRequest(request, response) {
 
     if (url.pathname === "/api/projects" && request.method === "GET") {
       const result = await listProjects({ featuredOnly: url.searchParams.get("featured") === "true" });
+      response.setHeader("Cache-Control", "no-store");
       return sendJson(response, 200, result);
     }
 
@@ -64,6 +65,7 @@ export async function handleApiRequest(request, response) {
 
     if (url.pathname === "/api/admin/projects" && request.method === "GET") {
       if (!isAuthorized(request)) return unauthorized(response);
+      response.setHeader("Cache-Control", "no-store");
       return sendJson(response, 200, await listProjects({ admin: true }));
     }
 

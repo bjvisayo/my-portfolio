@@ -22,7 +22,7 @@ export async function createProject(body) {
     slug: slugify(body.slug || body.title),
     category: clean(body.category, 120),
     description: clean(body.description, 1200),
-    projectUrl: clean(body.projectUrl, 500),
+    projectUrl: normalizeUrl(body.projectUrl),
     status: body.status === "published" ? "published" : "draft",
     isFeatured: Boolean(body.isFeatured),
     sortOrder: Number(body.sortOrder || 0),
@@ -41,7 +41,7 @@ export async function updateProject(id, body) {
     slug: body.slug !== undefined ? slugify(body.slug) : undefined,
     category: body.category !== undefined ? clean(body.category, 120) : undefined,
     description: body.description !== undefined ? clean(body.description, 1200) : undefined,
-    projectUrl: body.projectUrl !== undefined ? clean(body.projectUrl, 500) : undefined,
+    projectUrl: body.projectUrl !== undefined ? normalizeUrl(body.projectUrl) : undefined,
     status: body.status === "published" ? "published" : "draft",
     isFeatured: Boolean(body.isFeatured),
     sortOrder: Number(body.sortOrder || 0),
@@ -117,4 +117,11 @@ function slugify(value) {
 
 function removeUndefined(value) {
   return Object.fromEntries(Object.entries(value).filter(([, item]) => item !== undefined));
+}
+
+function normalizeUrl(value) {
+  const url = clean(value, 500);
+  if (!url) return "";
+  if (/^(https?:|mailto:|tel:)/i.test(url)) return url;
+  return `https://${url}`;
 }

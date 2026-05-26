@@ -10,10 +10,10 @@ export default function Projects() {
 
   useEffect(() => {
     let active = true;
-    fetch("/api/projects")
+    fetch(`/api/projects?ts=${Date.now()}`, { cache: "no-store" })
       .then((response) => (response.ok ? response.json() : Promise.reject()))
       .then((data) => {
-        if (active && data.projects?.length) setProjects(data.projects);
+        if (active) setProjects(data.projects?.length ? data.projects : fallbackProjects);
       })
       .catch(() => {
         if (active) setProjects(fallbackProjects);
@@ -79,7 +79,7 @@ export default function Projects() {
                 </span>
                 <h3 className="font-display text-3xl font-bold">{project.title}</h3>
                 <p className="mt-3 max-w-xl text-sm leading-7 text-slate-300">{project.description}</p>
-                <a href={project.projectUrl || "/contact"} target={project.projectUrl ? "_blank" : undefined} rel={project.projectUrl ? "noreferrer" : undefined} className="blue-button mt-6 w-fit py-2.5">
+                <a href={getProjectHref(project.projectUrl)} target={project.projectUrl ? "_blank" : undefined} rel={project.projectUrl ? "noreferrer" : undefined} className="blue-button mt-6 w-fit py-2.5">
                   Visit Project <ExternalLink size={15} />
                 </a>
               </div>
@@ -93,4 +93,11 @@ export default function Projects() {
 
 function getHeroImage(project) {
   return project.images?.find((image) => image.isHero) || project.images?.[0];
+}
+
+function getProjectHref(projectUrl) {
+  const url = String(projectUrl || "").trim();
+  if (!url) return "/contact";
+  if (/^(https?:|mailto:|tel:)/i.test(url)) return url;
+  return `https://${url}`;
 }

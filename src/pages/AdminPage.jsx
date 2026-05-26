@@ -21,7 +21,7 @@ const projectTemplate = {
   category: "",
   description: "",
   projectUrl: "",
-  status: "draft",
+  status: "published",
   isFeatured: true,
   sortOrder: 0,
 };
