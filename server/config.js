@@ -9,6 +9,8 @@ try {
   // Vercel and other hosts inject env vars directly.
 }
 const hasSupabaseCredentials = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
+const requestedStorageDriver = process.env.STORAGE_DRIVER || (hasSupabaseCredentials ? "supabase" : "json");
+const normalizedStorageDriver = requestedStorageDriver.toLowerCase() === "superbase" ? "supabase" : requestedStorageDriver.toLowerCase();
 
 export const config = {
   root,
@@ -20,7 +22,8 @@ export const config = {
   port: Number(process.env.PORT || 3000),
   adminUsername: process.env.ADMIN_USERNAME || "owner",
   adminPassword: process.env.ADMIN_PASSWORD || "secret",
-  storageDriver: process.env.STORAGE_DRIVER || (hasSupabaseCredentials ? "supabase" : "json"),
+  storageDriver: normalizedStorageDriver,
+  requestedStorageDriver,
   supabaseUrl: process.env.SUPABASE_URL || "",
   supabaseServiceRoleKey: process.env.SUPABASE_SERVICE_ROLE_KEY || "",
   supabaseLeadsTable: process.env.SUPABASE_LEADS_TABLE || "leads",

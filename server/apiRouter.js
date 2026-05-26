@@ -23,6 +23,7 @@ export async function handleApiRequest(request, response) {
         ok: true,
         service: "xander-kreativ-backend",
         storage: config.storageDriver,
+        requestedStorage: config.requestedStorageDriver,
         supabaseConfigured: config.isSupabaseConfigured,
         tables: {
           leads: config.supabaseLeadsTable,
