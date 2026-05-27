@@ -32,10 +32,10 @@ export const config = {
   supabaseProjectImagesBucket: process.env.SUPABASE_PROJECT_IMAGES_BUCKET || "project-images",
   maxProjectImageMb: Number(process.env.MAX_PROJECT_IMAGE_MB || 3),
   allowedProjectImageTypes: (process.env.ALLOWED_PROJECT_IMAGE_TYPES || "image/jpeg,image/png,image/webp").split(",").map((type) => type.trim()),
-  mailProvider: process.env.MAIL_PROVIDER || "none",
+  mailProvider: (process.env.MAIL_PROVIDER || "none").trim().toLowerCase(),
   resendApiKey: process.env.RESEND_API_KEY || "",
-  mailFrom: process.env.MAIL_FROM || "Xander Kreativ <hello@xanderkreativ.com>",
-  leadNotificationTo: process.env.LEAD_NOTIFICATION_TO || "",
+  mailFrom: process.env.MAIL_FROM || process.env.RESEND_FROM || process.env.FROM_EMAIL || "Xander Kreativ <hello@xanderkreativ.com>",
+  leadNotificationTo: process.env.LEAD_NOTIFICATION_TO || process.env.MAIL_TO || process.env.ADMIN_EMAIL || "",
   sendLeadAutoreply: process.env.SEND_LEAD_AUTOREPLY === "true",
   isProduction: process.env.NODE_ENV === "production",
   get usesDefaultAdminCredentials() {
@@ -46,7 +46,16 @@ export const config = {
   },
   get isMailConfigured() {
     if (this.mailProvider === "none") return false;
-    if (this.mailProvider === "resend") return Boolean(this.resendApiKey && this.mailFrom);
+    if (this.mailProvider === "resend") return Boolean(this.resendApiKey && this.mailFrom && (this.leadNotificationTo || this.sendLeadAutoreply));
     return false;
+  },
+  get mailDiagnostics() {
+    return {
+      provider: this.mailProvider,
+      hasResendApiKey: Boolean(this.resendApiKey),
+      from: this.mailFrom,
+      hasLeadNotificationTo: Boolean(this.leadNotificationTo),
+      sendLeadAutoreply: this.sendLeadAutoreply,
+    };
   },
 };

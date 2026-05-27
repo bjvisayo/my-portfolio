@@ -1,7 +1,9 @@
 import { config } from "./config.js";
 
 export async function sendLeadNotifications(lead) {
-  if (!config.isMailConfigured) return;
+  if (!config.isMailConfigured) {
+    return { sent: false, reason: "Mail is not configured", results: [] };
+  }
 
   const jobs = [];
 
@@ -13,11 +15,47 @@ export async function sendLeadNotifications(lead) {
     jobs.push(sendLeadAutoreplyEmail(lead));
   }
 
+  if (jobs.length === 0) {
+    return { sent: false, reason: "No email jobs were created", results: [] };
+  }
+
   const results = await Promise.allSettled(jobs);
-  for (const result of results) {
+  const summary = results.map((result) => {
     if (result.status === "rejected") {
       console.error("Lead email failed:", result.reason);
+      return { status: "rejected", reason: result.reason?.message || String(result.reason) };
     }
+    return { status: "fulfilled", id: result.value?.id || null };
+  });
+
+  return {
+    sent: summary.some((result) => result.status === "fulfilled"),
+    results: summary,
+  };
+}
+
+export async function sendAdminTestEmail() {
+  if (!config.isMailConfigured) {
+    return { statusCode: 400, payload: { error: "Mail is not configured", diagnostics: config.mailDiagnostics } };
+  }
+
+  if (!config.leadNotificationTo) {
+    return { statusCode: 400, payload: { error: "LEAD_NOTIFICATION_TO is missing", diagnostics: config.mailDiagnostics } };
+  }
+
+  try {
+    const result = await sendEmail({
+      to: config.leadNotificationTo,
+      subject: "Xander Kreativ mail test",
+      html: `
+        <h2>Xander Kreativ mail test</h2>
+        <p>Your Resend configuration is working.</p>
+        <p>Sent at ${new Date().toISOString()}</p>
+      `,
+    });
+    return { statusCode: 200, payload: { ok: true, result } };
+  } catch (error) {
+    return { statusCode: 502, payload: { error: error.message, diagnostics: config.mailDiagnostics } };
   }
 }
 

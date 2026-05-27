@@ -3,6 +3,7 @@ import { isAuthorized, unauthorized } from "./auth.js";
 import { createLead, deleteLead, exportLeadsCsv, getLead, listLeads, updateLead } from "./leadsService.js";
 import { createProject, deleteProject, deleteProjectImage, listProjects, updateProject, uploadProjectImage } from "./projectsService.js";
 import { getProjectImageObject } from "./projectImages.js";
+import { sendAdminTestEmail } from "./mailer.js";
 import { readJson, sendJson } from "./http.js";
 
 const rateLimit = new Map();
@@ -33,6 +34,7 @@ export async function handleApiRequest(request, response) {
         },
         projectImagesBucket: config.supabaseProjectImagesBucket,
         mailConfigured: config.isMailConfigured,
+        mail: config.mailDiagnostics,
         timestamp: new Date().toISOString(),
       });
     }
@@ -67,6 +69,12 @@ export async function handleApiRequest(request, response) {
       if (!isAuthorized(request)) return unauthorized(response);
       response.setHeader("Cache-Control", "no-store");
       return sendJson(response, 200, await listProjects({ admin: true }));
+    }
+
+    if (url.pathname === "/api/admin/mail-test" && request.method === "POST") {
+      if (!isAuthorized(request)) return unauthorized(response);
+      const result = await sendAdminTestEmail();
+      return sendJson(response, result.statusCode, result.payload);
     }
 
     if (url.pathname === "/api/admin/projects" && request.method === "POST") {

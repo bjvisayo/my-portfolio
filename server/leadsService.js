@@ -26,8 +26,8 @@ export async function createLead(body) {
   };
 
   const savedLead = await createLeadRecord(lead);
-  await sendLeadNotifications(savedLead);
-  return { statusCode: 201, payload: { lead: savedLead } };
+  const mail = await sendLeadNotifications(savedLead);
+  return { statusCode: 201, payload: { lead: savedLead, mail } };
 }
 
 export async function listLeads(filters = {}) {

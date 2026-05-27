@@ -52,6 +52,20 @@ export default function AdminPage() {
     window.localStorage.removeItem("xk-admin-auth");
   };
 
+  const sendTestEmail = async () => {
+    setMessage("Sending test email...");
+    try {
+      const response = await fetch("/api/admin/mail-test", {
+        method: "POST",
+        headers: { Authorization: authHeader },
+      });
+      if (!response.ok) throw new Error(await readApiError(response, "Could not send test email"));
+      setMessage("Test email sent. Check your inbox and spam folder.");
+    } catch (error) {
+      setMessage(error.message || "Could not send test email.");
+    }
+  };
+
   return (
     <section className="min-h-screen bg-[#07111F] pt-32">
       <div className="container-xl pb-24">
@@ -68,6 +82,9 @@ export default function AdminPage() {
               </button>
               <button className={tabClass(activeTab === "leads")} onClick={() => setActiveTab("leads")} type="button">
                 <DollarSign size={17} /> Leads
+              </button>
+              <button className="ghost-button" onClick={sendTestEmail} type="button">
+                Test Email
               </button>
               <button className="ghost-button" onClick={logout} type="button">
                 Log out
