@@ -13,6 +13,7 @@ export async function handleApiRequest(request, response) {
 
   try {
     const url = new URL(request.url, `http://${request.headers.host || "localhost"}`);
+    normalizeVercelRewrittenPath(url);
 
     if (request.method === "OPTIONS") {
       response.writeHead(204);
@@ -187,4 +188,15 @@ function setSecurityHeaders(response) {
   response.setHeader("X-Frame-Options", "DENY");
   response.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
   response.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
+}
+
+function normalizeVercelRewrittenPath(url) {
+  if (url.pathname !== "/api") return;
+
+  const path = url.searchParams.get("path");
+  if (!path) return;
+
+  const normalizedPath = Array.isArray(path) ? path.join("/") : path;
+  url.pathname = `/api/${String(normalizedPath).replace(/^\/+/, "")}`;
+  url.searchParams.delete("path");
 }
