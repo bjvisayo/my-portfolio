@@ -39,6 +39,15 @@ export async function handleApiRequest(request, response) {
       });
     }
 
+    if (url.pathname === "/api/mail-status" && request.method === "GET") {
+      return sendJson(response, 200, {
+        ok: true,
+        mailConfigured: config.isMailConfigured,
+        mail: config.mailDiagnostics,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
     if (url.pathname === "/api/leads" && request.method === "POST") {
       if (!allowPublicSubmission(request)) {
         return sendJson(response, 429, { error: "Too many submissions. Please try again shortly." });

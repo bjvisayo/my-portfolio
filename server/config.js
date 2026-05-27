@@ -11,6 +11,8 @@ try {
 const hasSupabaseCredentials = Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 const requestedStorageDriver = process.env.STORAGE_DRIVER || (hasSupabaseCredentials ? "supabase" : "json");
 const normalizedStorageDriver = requestedStorageDriver.toLowerCase() === "superbase" ? "supabase" : requestedStorageDriver.toLowerCase();
+const resendApiKey = (process.env.RESEND_API_KEY || "").trim();
+const requestedMailProvider = (process.env.MAIL_PROVIDER || (resendApiKey ? "resend" : "none")).trim().toLowerCase();
 
 export const config = {
   root,
@@ -32,10 +34,10 @@ export const config = {
   supabaseProjectImagesBucket: process.env.SUPABASE_PROJECT_IMAGES_BUCKET || "project-images",
   maxProjectImageMb: Number(process.env.MAX_PROJECT_IMAGE_MB || 3),
   allowedProjectImageTypes: (process.env.ALLOWED_PROJECT_IMAGE_TYPES || "image/jpeg,image/png,image/webp").split(",").map((type) => type.trim()),
-  mailProvider: (process.env.MAIL_PROVIDER || "none").trim().toLowerCase(),
-  resendApiKey: process.env.RESEND_API_KEY || "",
-  mailFrom: process.env.MAIL_FROM || process.env.RESEND_FROM || process.env.FROM_EMAIL || "Xander Kreativ <hello@xanderkreativ.com>",
-  leadNotificationTo: process.env.LEAD_NOTIFICATION_TO || process.env.MAIL_TO || process.env.ADMIN_EMAIL || "",
+  mailProvider: requestedMailProvider,
+  resendApiKey,
+  mailFrom: (process.env.MAIL_FROM || process.env.RESEND_FROM || process.env.FROM_EMAIL || "Xander Kreativ <hello@xanderkreativ.com>").trim(),
+  leadNotificationTo: (process.env.LEAD_NOTIFICATION_TO || process.env.MAIL_TO || process.env.ADMIN_EMAIL || "").trim(),
   sendLeadAutoreply: process.env.SEND_LEAD_AUTOREPLY === "true",
   isProduction: process.env.NODE_ENV === "production",
   get usesDefaultAdminCredentials() {
@@ -52,6 +54,7 @@ export const config = {
   get mailDiagnostics() {
     return {
       provider: this.mailProvider,
+      requestedProvider: process.env.MAIL_PROVIDER || "",
       hasResendApiKey: Boolean(this.resendApiKey),
       from: this.mailFrom,
       hasLeadNotificationTo: Boolean(this.leadNotificationTo),

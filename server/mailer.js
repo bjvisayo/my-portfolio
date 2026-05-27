@@ -2,7 +2,7 @@ import { config } from "./config.js";
 
 export async function sendLeadNotifications(lead) {
   if (!config.isMailConfigured) {
-    return { sent: false, reason: "Mail is not configured", results: [] };
+    return { sent: false, reason: "Mail is not configured", diagnostics: config.mailDiagnostics, results: [] };
   }
 
   const jobs = [];
